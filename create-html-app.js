@@ -44,27 +44,108 @@ const reader = readline.createInterface({
     output: process.stdout
 })
 
-function createFileSystem(){
-    reader.question('Enter your Project name: ', function(projectName){
-        fs.mkdir(`./${projectName}`, (err) => {
-            if(err){
-                console.log(err);
-            }
-            console.log('\nProject name added!');
-            fs.writeFile(`./${projectName}/index.html`, `<html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>${projectName}</title>
-            </head>
-            <body>
-                
-            </body>
-            </html>`, () => {
-                console.log('and index.html file created inside it.')
-            })
+
+
+function htmlFileContent(title, css, script){
+    let content = `<html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${title}</title>
+            
+        </head>
+        <body>
+            
+        </body>
+        </html>`
+}
+
+function addScriptTag(source){
+    return `<script src="${source}"></script>`
+}
+
+function addLinkTag(fileLocation){
+    return `<link rel="stylesheet" src="${fileLocation}" />`
+}
+
+function createFolder(folderName, fileName = null){
+    fs.mkdir(`./${folderName}`, (err) => {
+        if(err){
+            console.log(err);
+        }
+        if(filename !== null){
+            createFile(folderName, fileName)
+        }
+        console.log(`\nFolder ${folderName} added!`);
+    })
+}
+
+function createFile(projectName, fileName){
+    fs.writeFile(`./${projectName}/${fileName}`, htmlFileContent(projectName), () => {
+            console.log(`${fileName} file created inside the folder ${projectName}.`)
         })
+}
+
+function toContinue() {
+    reader.question('\nDo you want to continue (y/n): ', function(toQuit) {
+        switch (toQuit) {
+            case 'y':
+                todoApp()
+                break;
+            case 'n':
+                reader.close()
+            default:
+                console.log('\nInvalid entry!');
+                todoApp()
+                break;
+        }
+    })
+}
+
+
+function createFileSystem(){
+    reader.question('\nEnter your Project name: ', function(projectName){
+        createFolder(projectName)
+
+        console.log(`Welcome to your File-System.\nYou can add CSS and JavaScript files.\nYou can include Bootstap.`); 
+        reader.question(`\nDo you want to add files? (y/n): `, function(addFile){
+            if(addFile === 'y'){
+                console.log(`\nAdd Css file: Press 1\nAdd JS file: Press 2\nAdd Bootstrap file: Press 3`);
+                reader.question(`Enter your choice: `, function(fileType){
+                    switch (fileType) {
+                        case '1':
+                                reader.question(`Enter your CSS folder name: `, function(folderName = projectName){
+                                    reader.question(`Enter your CSS filename with extension`, function(fileName){
+                                        createFolder(folderName, fileName)
+                                    })
+                                })
+                                break;
+                        
+                        case '2':
+                                reader.question(`Enter your JS folder name: `, function(folderName = projectName){
+                                    reader.question(`Enter your JS filename with extension`, function(fileName){
+                                        createFolder(folderName, fileName)
+                                    })
+                                })
+                                break;
+
+                        case '3':
+                                console.log(`\nBootstrap CDNs Added!`);
+                                toContinue()
+                                break;
+
+                        default:
+                            break;
+                    }
+                    
+                })
+            }
+            else{
+                reader.close()
+            }
+        })
+        toContinue()
     })
 }
 

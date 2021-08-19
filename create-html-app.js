@@ -13,10 +13,10 @@ function htmlFileContent(title, css = null, script = null){
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${title}</title>
-            ${css ? `<link rel="stylesheet" href="${css}" />` : null}
+            ${css ? `<link rel="stylesheet" href="${css}" />` : ``}
         </head>
         <body>
-            ${script ? `<script src="./js/${script}"></script>` : null}
+            ${script ? `<script src="${script}"></script>` : ``}
         </body>
         </html>`
 }
@@ -58,7 +58,7 @@ function createFileSystem(){
                     else{
                         reader.question('\nDo you need a js file? (y/n): ', function(ifJs){
                             if(ifJs === "y"){
-                                fs.writeFile(`./${projectName}/index.html`, htmlFileContent(projectName, "./js/index.js"), () => {
+                                fs.writeFile(`./${projectName}/index.html`, htmlFileContent(projectName,null, "./js/index.js"), () => {
                                     fs.mkdir(`./${projectName}/js`, () =>{
                                         fs.writeFile(`./${projectName}/js/index.js`, `/* Add JS Here. */`, () => {
                                             console.log('Project Created!');

@@ -46,8 +46,8 @@ const reader = readline.createInterface({
 
 
 
-function htmlFileContent(title, css, script){
-    let content = `<html lang="en">
+function htmlFileContent(title){
+    return `<html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -69,20 +69,18 @@ function addLinkTag(fileLocation){
     return `<link rel="stylesheet" src="${fileLocation}" />`
 }
 
-function createFolder(folderName, fileName = null){
+function createFolder(folderName, fileName){
     fs.mkdir(`./${folderName}`, (err) => {
         if(err){
             console.log(err);
         }
-        if(filename !== null){
-            createFile(folderName, fileName)
-        }
         console.log(`\nFolder ${folderName} added!`);
+        createFile(folderName, fileName)
     })
 }
 
 function createFile(projectName, fileName){
-    fs.writeFile(`./${projectName}/${fileName}`, htmlFileContent(projectName), () => {
+    fs.writeFile(`./${projectName}/${fileName}`, "/* Add your code here.*/", () => {
             console.log(`${fileName} file created inside the folder ${projectName}.`)
         })
 }
@@ -105,29 +103,35 @@ function toContinue() {
 
 
 function createFileSystem(){
-    reader.question('\nEnter your Project name: ', function(projectName){
-        createFolder(projectName)
+    console.clear()
+    console.log("Welcome to your File-System.\nYou can add CSS and JavaScript files.\nYou can include Bootstap.");
 
-        console.log(`Welcome to your File-System.\nYou can add CSS and JavaScript files.\nYou can include Bootstap.`); 
+    reader.question('\nEnter your Project name: ', function(projectName){
+
+        createFolder(projectName, "index.html")
+        htmlFileContent(projectName)
+
         reader.question(`\nDo you want to add files? (y/n): `, function(addFile){
+
             if(addFile === 'y'){
                 console.log(`\nAdd Css file: Press 1\nAdd JS file: Press 2\nAdd Bootstrap file: Press 3`);
+
                 reader.question(`Enter your choice: `, function(fileType){
+                    
                     switch (fileType) {
+
                         case '1':
-                                reader.question(`Enter your CSS folder name: `, function(folderName = projectName){
-                                    reader.question(`Enter your CSS filename with extension`, function(fileName){
-                                        createFolder(folderName, fileName)
-                                    })
+                                reader.question(`Enter your CSS filename with extension`, function(fileName){
+                                    createFolder("css", fileName)
                                 })
+                                toContinue()
                                 break;
                         
                         case '2':
-                                reader.question(`Enter your JS folder name: `, function(folderName = projectName){
-                                    reader.question(`Enter your JS filename with extension`, function(fileName){
-                                        createFolder(folderName, fileName)
-                                    })
+                                reader.question(`Enter your JS filename with extension`, function(fileName){
+                                    createFolder("js", fileName)
                                 })
+                                toContinue()
                                 break;
 
                         case '3':
